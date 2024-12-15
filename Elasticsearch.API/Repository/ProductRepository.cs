@@ -1,11 +1,12 @@
-﻿using Elasticsearch.API.Dtos;
+﻿using Elastic.Clients.Elasticsearch;
+using Elastic.Clients.Elasticsearch.QueryDsl;
+using Elasticsearch.API.Dtos;
 using Elasticsearch.API.Models;
-using Nest;
 using System.Collections.Immutable;
 
 namespace Elasticsearch.API.Repository
 {
-    public class ProductRepository(ElasticClient client)
+    public class ProductRepository(ElasticsearchClient client)
     {
         private const string indexName = "products";
 
@@ -15,7 +16,7 @@ namespace Elasticsearch.API.Repository
 
             var response = await client.IndexAsync(newProduct, x => x.Index("products"));
 
-            if (!response.IsValid) return null;
+            if (!response.IsValidResponse) return null;
 
             newProduct.Id = response.Id;
 
@@ -24,7 +25,7 @@ namespace Elasticsearch.API.Repository
 
         public async Task<ImmutableList<Product>> GetAllAsync()
         {
-            var response = await client.SearchAsync<Product>(s => s.Index(indexName).Query(q => q.MatchAll()));
+            var response = await client.SearchAsync<Product>(s => s.Index(indexName).Query(q => q.MatchAll(new MatchAllQuery())));
 
             foreach (var hit in response.Hits)
             {
@@ -47,9 +48,9 @@ namespace Elasticsearch.API.Repository
 
         public async Task<bool> UpdateAsync(ProductUpdateDto productUpdateDto)
         {
-            var response = await client.UpdateAsync<Product, ProductUpdateDto>(productUpdateDto.Id, x => x.Index(indexName).Doc(productUpdateDto));
+            var response = await client.UpdateAsync<Product, ProductUpdateDto>(indexName, productUpdateDto.Id,x => x.Doc(productUpdateDto));
 
-            return response.IsValid;
+            return response.IsValidResponse;
         }
 
         public async Task<DeleteResponse> DeleteAsync(string id)

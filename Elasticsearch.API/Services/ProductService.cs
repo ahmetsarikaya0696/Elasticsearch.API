@@ -1,7 +1,7 @@
-﻿using Elasticsearch.API.Dtos;
+﻿using Elastic.Clients.Elasticsearch;
+using Elasticsearch.API.Dtos;
 using Elasticsearch.API.Models;
 using Elasticsearch.API.Repository;
-using Nest;
 using System.Collections.Immutable;
 using System.Net;
 
@@ -90,15 +90,17 @@ namespace Elasticsearch.API.Services
         {
             var deleteResponse = await productRepository.DeleteAsync(id);
 
-            if (!deleteResponse.IsValid && deleteResponse.Result == Result.NotFound)
+            if (!deleteResponse.IsValidResponse && deleteResponse.Result == Result.NotFound)
                 return ResponseDto<bool>.Fail(["Silmeye çalıştığınız ürün bulunamamıştır"], HttpStatusCode.NotFound);
 
-            if (!deleteResponse.IsValid)
+            if (!deleteResponse.IsValidResponse)
             {
-                logger.LogError(deleteResponse.OriginalException, deleteResponse.ServerError.Error.ToString());
+                deleteResponse.TryGetOriginalException(out Exception? exception);
+                logger.LogError(exception, deleteResponse.ElasticsearchServerError!.Error.ToString());
+                
                 return ResponseDto<bool>.Fail(["Silme işlemi sırasında bir hata oluştu"], HttpStatusCode.InternalServerError);
             }
-            return ResponseDto<bool>.Success(deleteResponse.IsValid, HttpStatusCode.NoContent);
+            return ResponseDto<bool>.Success(deleteResponse.IsValidResponse, HttpStatusCode.NoContent);
         }
 
         private static ColorEnum ConvertStringToColorEnum(ProductCreateDto request)
