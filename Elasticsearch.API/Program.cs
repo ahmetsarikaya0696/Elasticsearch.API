@@ -1,6 +1,5 @@
 using Elasticsearch.API.Extensions;
 using Elasticsearch.API.Repository;
-using Elasticsearch.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddElasticsearchServiceExtension(builder.Configuration);
 
-builder.Services.AddScoped<ProductRepository>();
-builder.Services.AddScoped<ProductService>();
-
+builder.Services.AddScoped<DocumentRepository>();
 
 var app = builder.Build();
 
