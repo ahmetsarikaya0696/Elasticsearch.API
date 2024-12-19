@@ -257,7 +257,7 @@ namespace Elasticsearch.API.Repository
                             .Match(m => m
                                 .Field(f => f.CustomerFullName)
                                 .Query(customerFullName)
-                            )
+                            ), s => s
                             .Prefix(p => p
                                 .Field(f => f.CustomerFullName.Suffix("keyword"))
                                 .Value(customerFullName)

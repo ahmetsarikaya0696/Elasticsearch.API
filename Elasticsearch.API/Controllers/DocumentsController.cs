@@ -76,7 +76,7 @@ namespace Elasticsearch.API.Controllers
         [HttpGet]
         public async Task<IActionResult> CompoundQueryExampleOne(string cityName, double taxfulTotalPrice, string categoryName, string manufacturerName)
         {
-            return Ok(await documentRepository.CompoundQueryExampleOneAsync(cityName, taxfulTotalPrice, categoryName,manufacturerName));
+            return Ok(await documentRepository.CompoundQueryExampleOneAsync(cityName, taxfulTotalPrice, categoryName, manufacturerName));
         }
 
         [HttpGet]
