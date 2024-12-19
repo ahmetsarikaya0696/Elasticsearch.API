@@ -1,0 +1,88 @@
+﻿@model Elasticsearch.Web.ViewModels.SearchPageViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-md-4">
+            <form asp-controller="ECommerce" asp-action="Search" method="get">
+                <div class="mb-3">
+                    <label asp-for="@Model.ECommerceSearchViewModel.CustomerFullName" class="form-label"></label>
+                    <input asp-for="@Model.ECommerceSearchViewModel.CustomerFullName" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label asp-for="@Model.ECommerceSearchViewModel.Category" class="form-label"></label>
+                    <input asp-for="@Model.ECommerceSearchViewModel.Category" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label asp-for="@Model.ECommerceSearchViewModel.Gender" class="form-label"></label>
+                    <input asp-for="@Model.ECommerceSearchViewModel.Gender" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label asp-for="@Model.ECommerceSearchViewModel.OrderDateStart" class="form-label"></label>
+                    <input asp-for="@Model.ECommerceSearchViewModel.OrderDateStart" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label asp-for="@Model.ECommerceSearchViewModel.OrderDateEnd" class="form-label"></label>
+                    <input asp-for="@Model.ECommerceSearchViewModel.OrderDateEnd" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <div class="alert alert-success">
+                <span>Toplam @Model.TotalCount kayıt bulunmuştur.</span>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Full Name</th>
+                        <th>Order Date</th>
+                        <th>Gender</th>
+                        <th>Taxful Total Price</th>
+                        <th>Category</th>
+                        <th>Order Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var eCommerceViewModel in Model.ECommerceViewModelList)
+                    {
+                        <tr>
+                            <th>@eCommerceViewModel.CustomerFullName</th>
+                            <td>@eCommerceViewModel.OrderDate</td>
+                            <td>@eCommerceViewModel.CustomerGender</td>
+                            <td>@eCommerceViewModel.TaxfulTotalPrice</td>
+                            <td>@eCommerceViewModel.Category</td>
+                            <td>@eCommerceViewModel.OrderId</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="@Model.CreatePageUrl(Context.Request, 1, Model.PageSize)">First</a>
+                    </li>
+
+                    @for (int i = Model.StartPage; i <= Model.EndPage; i++)
+                    {
+                        <li class="page-item @(Model.Page == i ? "active" : "")">
+                            <a class="page-link" href="@Model.CreatePageUrl(Context.Request, i, Model.PageSize)">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item">
+                        <a class="page-link" href="@Model.CreatePageUrl(Context.Request, (int)Model.PageLinkCount, Model.PageSize)">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

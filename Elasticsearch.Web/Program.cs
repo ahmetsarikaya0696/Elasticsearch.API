@@ -9,7 +9,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddElasticsearchServiceExtension(builder.Configuration);
 
 builder.Services.AddScoped<BlogRepository>();
+builder.Services.AddScoped<EcommerceRepository>();
+
 builder.Services.AddScoped<BlogService>();
+builder.Services.AddScoped<ECommerceService>();
 
 var app = builder.Build();
 

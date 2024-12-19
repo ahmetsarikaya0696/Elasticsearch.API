@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Elasticsearch.Web.ViewModels
+﻿namespace Elasticsearch.Web.ViewModels
 {
     public class BlogViewModel
     {
